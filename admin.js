@@ -1094,19 +1094,20 @@ function adminV27RenderRegisteredLists() {
 }
 
 async function adminV27ReloadAfterChange() {
-  if (typeof loadCatalogueFromSupabase === 'function' && navigator.onLine) {
-    await loadCatalogueFromSupabase();
-  }
-  if (typeof renderAdminCatalogue === 'function') renderAdminCatalogue();
-  if (typeof renderAdminOperateurs === 'function') renderAdminOperateurs();
+  // V27 START : on ne recharge pas le Catalogue complet après un ajout START.
+  // Objectif : éviter que les éléments ajoutés via START apparaissent aussi
+  // dans la zone "Catalogue complet — Import Excel".
+  if (typeof adminV27RefreshLists === 'function') adminV27RefreshLists();
+  if (typeof adminV27RenderRegisteredLists === 'function') adminV27RenderRegisteredLists();
+
+  // On rafraîchit les listes de saisie opérationnelles uniquement.
   if (typeof populateClientSelect === 'function') populateClientSelect();
+  if (typeof populateOpSelects === 'function') populateOpSelects();
   if (typeof populateLineSelect === 'function') {
     populateLineSelect('inp-ligne');
     populateLineSelect('d-ligne');
   }
   if (typeof populateDetecteurSelect === 'function') populateDetecteurSelect();
-  adminV27RefreshLists();
-  adminV27RenderRegisteredLists();
 }
 
 async function adminV27Post(table, payload, prefer = 'resolution=merge-duplicates,return=representation') {
