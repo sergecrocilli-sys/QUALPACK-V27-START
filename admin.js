@@ -1359,18 +1359,28 @@ async function adminV27AddProduit() {
     });
 
     await adminV27Post('produits', [payload], 'resolution=merge-duplicates');
-    adminV27TrackStartRow('produits', {
+    const tu1 = calculerTU1(qn);
+const tu2 = calculerTU2(qn);
+const tne = calculerTNE(qn);
+
+adminV27TrackStartRow('produits', {
   id: payload.id,
   key: `${clientNom}||${nom}`,
   label: nom,
   nom,
   meta: clientNom,
   client: clientNom,
+
   qn,
+  tu1,
+  tu2,
+  tne,
+
   tare_fixe_g: Number.isFinite(tare) ? tare : null,
   ligne_prod: ligne || '',
   detecteur: detecteur || '',
   quantite_prevue_defaut: Number.isFinite(qte) ? qte : null,
+
   source: 'start'
 });
 
