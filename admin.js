@@ -1359,7 +1359,20 @@ async function adminV27AddProduit() {
     });
 
     await adminV27Post('produits', [payload], 'resolution=merge-duplicates');
-    adminV27TrackStartRow('produits', { id: payload.id, key: `${clientNom}||${nom}`, label: nom, meta: clientNom, client: clientNom });
+    adminV27TrackStartRow('produits', {
+  id: payload.id,
+  key: `${clientNom}||${nom}`,
+  label: nom,
+  nom,
+  meta: clientNom,
+  client: clientNom,
+  qn,
+  tare_fixe_g: Number.isFinite(tare) ? tare : null,
+  ligne_prod: ligne || '',
+  detecteur: detecteur || '',
+  quantite_prevue_defaut: Number.isFinite(qte) ? qte : null,
+  source: 'start'
+});
 
     ['admin-v27-prod-client','admin-v27-prod-nom','admin-v27-prod-qn','admin-v27-prod-tare','admin-v27-prod-ligne','admin-v27-prod-det','admin-v27-prod-qte']
       .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
