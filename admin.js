@@ -1093,14 +1093,110 @@ function adminV27RenderRegisteredLists() {
   adminV27RenderMiniList('admin-v27-list-produits', products, 'Aucun produit ajouté via START');
 }
 
+function adminV27ApplyStartToOperationalLists() {
+  // Alimente uniquement les écrans opérationnels (Pesées / Détecteur),
+  // sans forcer le rendu du Catalogue complet — Import Excel.
+
+  try {
+    const ops = adminV27GetStartRows('operateurs')
+      .filter(op => op && !adminV27IsHidden('operateurs', op.label || op.nom))
+      .map(op => ({
+        id: op.id || op.key || ('op_start_' + adminV27Slug(op.label || op.nom || 'operateur')),
+        nom: op.label || op.nom,
+        role: op.role || op.meta || 'Operateur',
+        actif: true,
+        source: 'start'
+      }))
+      .filter(op => op.nom);
+
+    if (ops.length && typeof mergeOperateursLists === 'function') {
+      OPERATEURS = mergeOperateursLists(ops, OPERATEURS || []);
+      if (typeof saveLocalOperateursCache === 'function') saveLocalOperateursCache(OPERATEURS);
+    }
+  } catch (e) {
+    console.warn('adminV27ApplyStartToOperationalLists opérateurs:', e);
+  }
+
+  try {
+    const clients = adminV27GetStartRows('clients')
+      .filter(c => c && !adminV27IsHidden('clients', c.label || c.nom))
+      .map(c => c.label || c.nom)
+      .filter(Boolean);
+
+    clients.forEach(nom => {
+      if (!CATALOGUE[nom]) CATALOGUE[nom] = [];
+    });
+  } catch (e) {
+    console.warn('adminV27ApplyStartToOperationalLists clients:', e);
+  }
+
+  try {
+    const lignes = adminV27GetStartRows('lignes')
+      .filter(l => l && !adminV27IsHidden('lignes', l.label || l.nom))
+      .map(l => l.label || l.nom)
+      .filter(Boolean);
+
+    if (lignes.length && typeof mergeStoredLineCatalogue === 'function') {
+      mergeStoredLineCatalogue(lignes);
+    }
+
+    const detecteurs = adminV27GetStartRows('lignes')
+      .filter(l => l && !adminV27IsHidden('lignes', l.label || l.nom))
+      .map(l => l.detecteur || l.meta)
+      .filter(Boolean);
+
+    if (detecteurs.length && typeof mergeStoredDetecteurCatalogue === 'function') {
+      mergeStoredDetecteurCatalogue(detecteurs);
+    }
+
+    if (typeof getLineDetecteurMap === 'function' && typeof saveLineDetecteurMap === 'function') {
+      const map = getLineDetecteurMap();
+      adminV27GetStartRows('lignes').forEach(l => {
+        const ligne = l.label || l.nom;
+        const det = l.detecteur || l.meta;
+        if (ligne && det) map[ligne] = det;
+      });
+      saveLineDetecteurMap(map);
+    }
+  } catch (e) {
+    console.warn('adminV27ApplyStartToOperationalLists lignes/détecteurs:', e);
+  }
+
+  try {
+    const produits = adminV27GetStartRows('produits')
+      .filter(p => p && !adminV27IsHidden('produits', p.label || p.nom));
+
+    produits.forEach(p => {
+      const client = p.client || p.meta || 'Non spécifié';
+      if (!CATALOGUE[client]) CATALOGUE[client] = [];
+      const exists = CATALOGUE[client].some(x => adminV27Norm(x.nom) === adminV27Norm(p.label || p.nom));
+      if (!exists) {
+        CATALOGUE[client].push({
+          id: p.id || p.key || ('prod_start_' + adminV27Slug(p.label || p.nom || 'produit')),
+          nom: p.label || p.nom,
+          qn: p.qn || null,
+          tare_fixe_g: p.tare_fixe_g ?? null,
+          ligne_prod: p.ligne_prod || '',
+          detecteur: p.detecteur || '',
+          quantite_prevue_defaut: p.quantite_prevue_defaut ?? null,
+          actif: true,
+          source: 'start'
+        });
+      }
+    });
+  } catch (e) {
+    console.warn('adminV27ApplyStartToOperationalLists produits:', e);
+  }
+}
+
 async function adminV27ReloadAfterChange() {
-  // V27 START : on ne recharge pas le Catalogue complet après un ajout START.
-  // Objectif : éviter que les éléments ajoutés via START apparaissent aussi
-  // dans la zone "Catalogue complet — Import Excel".
+  if (typeof adminV27ApplyStartToOperationalLists === 'function') {
+    adminV27ApplyStartToOperationalLists();
+  }
+
   if (typeof adminV27RefreshLists === 'function') adminV27RefreshLists();
   if (typeof adminV27RenderRegisteredLists === 'function') adminV27RenderRegisteredLists();
 
-  // On rafraîchit les listes de saisie opérationnelles uniquement.
   if (typeof populateClientSelect === 'function') populateClientSelect();
   if (typeof populateOpSelects === 'function') populateOpSelects();
   if (typeof populateLineSelect === 'function') {
