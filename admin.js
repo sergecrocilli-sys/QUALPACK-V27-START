@@ -1245,13 +1245,10 @@ async function adminV27AddProduit() {
   try {
     adminV27SetStatus('Ajout produit en cours...');
     const client_id = await adminV27EnsureClient(clientNom);
-    if (ligne && typeof mergeStoredLineCatalogue === 'function') mergeStoredLineCatalogue([ligne]);
-    if (detecteur && typeof mergeStoredDetecteurCatalogue === 'function') mergeStoredDetecteurCatalogue([detecteur]);
-    if (ligne && detecteur && typeof getLineDetecteurMap === 'function' && typeof saveLineDetecteurMap === 'function') {
-      const map = getLineDetecteurMap();
-      map[ligne] = detecteur;
-      saveLineDetecteurMap(map);
-    }
+     
+    // V27 START : le produit reste visible dans les mini-listes START.
+    // On évite de le pousser visuellement dans le catalogue complet.
+    // La sauvegarde Supabase reste active.
 
     const payload = qpWithSite({
       id: adminV27Id('prod', `${client_id}_${nom}`),
