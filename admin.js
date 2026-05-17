@@ -1165,7 +1165,6 @@ async function adminV27AddOperateur() {
     const payload = qpWithSite({ id, nom, role, actif: true });
 
     if (typeof upsertLocalOperateur === 'function') upsertLocalOperateur(payload);
-    if (typeof renderAdminOperateurs === 'function') renderAdminOperateurs();
     if (typeof populateOpSelects === 'function') populateOpSelects();
 
     await adminV27Post('operateurs', payload);
