@@ -1,4 +1,4 @@
-const CACHE_NAME = 'qualpack-v27-start-2';
+const CACHE_NAME = 'qualpack-v27-start-3';
 
 const APP_SHELL = [
   './',
