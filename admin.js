@@ -1359,32 +1359,30 @@ async function adminV27AddProduit() {
     });
 
     await adminV27Post('produits', [payload], 'resolution=merge-duplicates');
-    const tu1 = calculerTU1(qn);
-const tu2 = calculerTU2(qn);
-const tne = calculerTNE(qn);
+    
 
-const seuils = calcSeuils(qn);
+    const seuils = calcSeuils(qn);
 
-adminV27TrackStartRow('produits', {
-  id: payload.id,
-  key: `${clientNom}||${nom}`,
-  label: nom,
-  nom,
-  meta: clientNom,
-  client: clientNom,
+    adminV27TrackStartRow('produits', {
+    id: payload.id,
+    key: `${clientNom}||${nom}`,
+    label: nom,
+    nom,
+    meta: clientNom,
+    client: clientNom,
 
-  qn,
-  tu1: seuils.tu1,
-  tu2: seuils.tu2,
-  tne: seuils.tne,
+    qn,
+    tu1: seuils.tu1,
+    tu2: seuils.tu2,
+    tne: seuils.tne,
 
-  tare_fixe_g: Number.isFinite(tare) ? tare : null,
-  ligne_prod: ligne || '',
-  detecteur: detecteur || '',
-  quantite_prevue_defaut: Number.isFinite(qte) ? qte : null,
+    tare_fixe_g: Number.isFinite(tare) ? tare : null,
+    ligne_prod: ligne || '',
+    detecteur: detecteur || '',
+    quantite_prevue_defaut: Number.isFinite(qte) ? qte : null,
 
-  source: 'start'
-});
+    source: 'start'
+  });
 
     ['admin-v27-prod-client','admin-v27-prod-nom','admin-v27-prod-qn','admin-v27-prod-tare','admin-v27-prod-ligne','admin-v27-prod-det','admin-v27-prod-qte']
       .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
