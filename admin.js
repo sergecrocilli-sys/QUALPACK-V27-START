@@ -1212,13 +1212,11 @@ async function adminV27AddLigne() {
     // Table lignes : id Supabase peut être numérique. On laisse Supabase générer l'id.
     await adminV27Post('lignes', qpWithSite({ nom, detecteur_defaut: detecteur || null }));
     adminV27TrackStartRow('lignes', { label: nom, meta: detecteur || '', detecteur: detecteur || '' });
-    if (typeof mergeStoredLineCatalogue === 'function') mergeStoredLineCatalogue([nom]);
-    if (detecteur && typeof mergeStoredDetecteurCatalogue === 'function') mergeStoredDetecteurCatalogue([detecteur]);
-    if (detecteur && typeof getLineDetecteurMap === 'function' && typeof saveLineDetecteurMap === 'function') {
-      const map = getLineDetecteurMap();
-      map[nom] = detecteur;
-      saveLineDetecteurMap(map);
-    }
+     
+    // V27 START : ligne/détecteur visibles dans les mini-listes START.
+    // On ne les pousse pas dans le catalogue complet affiché en bas.
+    // La synchronisation Supabase reste active.
+     
     document.getElementById('admin-v27-ligne-nom').value = '';
     document.getElementById('admin-v27-ligne-det').value = '';
     await adminV27ReloadAfterChange();
