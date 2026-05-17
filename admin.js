@@ -1363,6 +1363,8 @@ async function adminV27AddProduit() {
 const tu2 = calculerTU2(qn);
 const tne = calculerTNE(qn);
 
+const seuils = calcSeuils(qn);
+
 adminV27TrackStartRow('produits', {
   id: payload.id,
   key: `${clientNom}||${nom}`,
@@ -1372,9 +1374,9 @@ adminV27TrackStartRow('produits', {
   client: clientNom,
 
   qn,
-  tu1,
-  tu2,
-  tne,
+  tu1: seuils.tu1,
+  tu2: seuils.tu2,
+  tne: seuils.tne,
 
   tare_fixe_g: Number.isFinite(tare) ? tare : null,
   ligne_prod: ligne || '',
