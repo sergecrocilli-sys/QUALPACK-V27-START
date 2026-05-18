@@ -3916,11 +3916,12 @@ function onProduit() {
 window.onOfSelect = onOfSelect;
 
 function chk1() {
-  const ofVal = document.getElementById('sel-of').style.display !== 'none'
-    ? document.getElementById('sel-of').value && document.getElementById('sel-of').value !== '__autre__'
-      ? document.getElementById('sel-of').value
-      : document.getElementById('inp-of').value.trim()
-    : document.getElementById('inp-of').value.trim();
+  const produitOk = !!document.getElementById('sel-produit').value;
+  const operateurOk = !!document.getElementById('sel-op').value;
+
+  // N° OF facultatif : on ne bloque plus le démarrage si vide
+  document.getElementById('btn-ps1').disabled = !(produitOk && operateurOk);
+}
 
   // V26-test : le client devient facultatif. Les champs obligatoires restent : produit, opérateur, OF.
   const ok = document.getElementById('sel-produit').value
@@ -3937,8 +3938,12 @@ function showStep(prefix, n) {
 
 function getOFValue() {
   const selOf = document.getElementById('sel-of');
-  if (selOf.style.display !== 'none' && selOf.value && selOf.value !== '__autre__') return selOf.value;
-  return document.getElementById('inp-of').value.trim();
+  if (selOf && selOf.style.display !== 'none' && selOf.value && selOf.value !== '__autre__') {
+    return selOf.value;
+  }
+
+  const v = document.getElementById('inp-of')?.value?.trim() || '';
+  return v || 'OF non renseigné';
 }
 
 
