@@ -3923,13 +3923,6 @@ function chk1() {
   document.getElementById('btn-ps1').disabled = !(produitOk && operateurOk);
 }
 
-  // V26-test : le client devient facultatif. Les champs obligatoires restent : produit, opérateur, OF.
-  const ok = document.getElementById('sel-produit').value
-    && document.getElementById('sel-op').value
-    && ofVal;
-  document.getElementById('btn-ps1').disabled = !ok;
-}
-
 function showStep(prefix, n) {
   document.querySelectorAll(`#screen-${prefix} .step`).forEach(s => s.classList.remove('active'));
   document.getElementById((prefix === 'pesees' ? 'ps' : 'ds') + n).classList.add('active');
