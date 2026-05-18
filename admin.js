@@ -885,8 +885,12 @@ try {
   };
 
   setOptions('admin-v27-clients-list', clients);
-  setOptions('admin-v27-lignes-list', lines);
-  setOptions('admin-v27-produits-list', [...new Set(produits)].sort((a,b) => a.localeCompare(b, 'fr', {sensitivity:'base'})));
+setOptions('admin-v27-lignes-list', lines);
+setOptions('admin-v27-detecteurs-list', dets);
+setOptions(
+  'admin-v27-produits-list',
+  [...new Set(produits)].sort((a,b) => a.localeCompare(b, 'fr', { sensitivity:'base' }))
+);
 }
 
 function adminV27Esc(value) {
