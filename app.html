@@ -4952,13 +4952,13 @@ const seuils = [
 ];
 
 doc.setFillColor(14, 45, 74);
-doc.roundedRect(M, y, 174, 28, 3, 3, 'F');
+doc.roundedRect(M, y, 174, 36, 3, 3, 'F');
 
 seuils.forEach(([k, v], i) => {
   const col = i % 3;
   const row = Math.floor(i / 3);
   const x = M + 6 + col * 56;
-  const yy = y + 6 + row * 11;
+  const yy = y + 6 + row * 14;
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7);
