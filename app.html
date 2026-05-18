@@ -6916,11 +6916,15 @@ body.innerHTML = `
 
       <section class="dash-pro-main">
 
-         <div class="dash-pro-top">
-  <div class="dash-pro-period-card">
-    <span>Période analysée</span>
-    <strong>Du ${periodeDebutTxt} au ${periodeFinTxt}</strong>
-  </div>
+       <div class="dash-pro-top">
+        <div class="dash-pro-period-card">
+          <span>Période analysée</span>
+          <strong>Du ${periodeDebutTxt} au ${periodeFinTxt}</strong>
+       </div>
+
+       <button class="dash-pro-report-btn" onclick="genDashboardPDF()">
+         📄 Rapport PDF
+       </button>
 
   <span class="dash-pro-badge ${badgeClass}">${badgeText}</span>
 </div>
