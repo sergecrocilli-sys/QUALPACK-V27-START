@@ -863,6 +863,20 @@ function adminV27RefreshLists() {
   const clients = adminV27GetClientNames();
   const lines = (typeof getStoredLineCatalogue === 'function') ? getStoredLineCatalogue() : [];
   const dets = (typeof getStoredDetecteurCatalogue === 'function') ? getStoredDetecteurCatalogue() : [];
+const produits = [];
+try {
+  Object.values(CATALOGUE || {}).forEach(arr => {
+    (Array.isArray(arr) ? arr : []).forEach(p => {
+      if (p && p.nom) produits.push(p.nom);
+    });
+  });
+  adminV27GetStartRows('produits').forEach(p => {
+    const nom = p && (p.label || p.nom);
+    if (nom) produits.push(nom);
+  });
+} catch (e) {
+  console.warn('adminV27RefreshLists produits:', e);
+}
 
   const setOptions = (id, values) => {
     const dl = document.getElementById(id);
@@ -872,7 +886,7 @@ function adminV27RefreshLists() {
 
   setOptions('admin-v27-clients-list', clients);
   setOptions('admin-v27-lignes-list', lines);
-  setOptions('admin-v27-detecteurs-list', dets);
+  setOptions('admin-v27-produits-list', [...new Set(produits)].sort((a,b) => a.localeCompare(b, 'fr', {sensitivity:'base'})));
 }
 
 function adminV27Esc(value) {
